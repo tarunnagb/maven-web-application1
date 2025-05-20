@@ -5,7 +5,7 @@ on:
     branches:
       - dev
       - qa
-      - prod
+      - main
 
 jobs:
   build-and-deploy:
