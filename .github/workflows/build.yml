@@ -43,11 +43,11 @@ jobs:
             echo "SONAR_PROJECT_KEY=sonar-project-qa"    >> $GITHUB_OUTPUT
             echo "ECR_REPOSITORY=${{ secrets.ECR_REPOSITORY_qa }}"  >> $GITHUB_ENV
             echo "AWS_REGION=eu-central-1"               >> $GITHUB_ENV
-          elif [[ "$BRANCH" == "prod" ]]; then
+          elif [[ "$BRANCH" == "main" ]]; then
             echo "MVN_CMD=clean package"                 >> $GITHUB_OUTPUT
             echo "SONAR_PROJECT_KEY=sonar-project-prod"  >> $GITHUB_OUTPUT
             echo "ECR_REPOSITORY=${{ secrets.ECR_REPOSITORY_PROD }}" >> $GITHUB_ENV
-            echo "AWS_REGION=eu-central-1"               >> $GITHUB_ENV
+            echo "AWS_REGION=ap-south-1"               >> $GITHUB_ENV
           else
             echo "Unsupported branch: $BRANCH"
             exit 1
