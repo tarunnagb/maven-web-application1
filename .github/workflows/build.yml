@@ -37,7 +37,7 @@ on:
 jobs:
   build:
     name: Build and Push Docker Image
-    runs-on: [self-runner]
+    runs-on: [self-hosted, Linux, X64]
     defaults:
       run:
         working-directory: ${{ inputs.workspace }}
