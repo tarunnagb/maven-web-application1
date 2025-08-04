@@ -33,11 +33,6 @@ on:
         default: 'Dockerfile'
         type: string
 
-      dockerBaseImage:
-        description: 'Optional base image (e.g., node:18)'
-        default: ''
-        type: string
-
       isDockerImagePush:
         description: 'Whether to push the Docker image to ECR'
         default: true
