@@ -2,7 +2,7 @@ name: Docker Build and Push to ECR
 run-name: Docker_${{ inputs.environment }}_${{ inputs.region }}
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       environment:
         description: 'Environment (dev, qa, stage, prod)'
