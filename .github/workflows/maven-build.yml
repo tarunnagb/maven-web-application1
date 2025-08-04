@@ -42,6 +42,12 @@ on:
         description: 'Whether to push the Docker image to ECR'
         default: true
         type: boolean
+        
+      workspace:
+        description: 'Publish workspace'
+        required: true
+        type: string
+        default: '${{ github.workspace }}'
 
 jobs:
   build:
