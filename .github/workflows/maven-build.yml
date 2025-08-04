@@ -1,0 +1,75 @@
+name: Docker Build and Push to ECR
+run-name: Docker_${{ inputs.environment }}_${{ inputs.region }}
+
+on:
+  workflow_call:
+    inputs:
+      environment:
+        description: 'Environment (dev, qa, stage, prod)'
+        required: true
+        type: string
+
+      region:
+        description: 'AWS Region'
+        default: 'us-east-1'
+        type: string
+
+      dockerfilePath:
+        description: 'Path to the Dockerfile'
+        default: 'Dockerfile'
+        type: string
+
+      dockerBaseImage:
+        description: 'Optional base image (e.g., node:18)'
+        default: ''
+        type: string
+
+      isDockerImagePush:
+        description: 'Whether to push the Docker image to ECR'
+        default: true
+        type: boolean
+
+      workspace:
+        description: 'Working directory'
+        type: string
+        default: '${{ github.workspace }}'
+        required: true
+
+jobs:
+  build:
+    name: Build and Push Docker Image
+    runs-on: [self-hosted, Linux, X64]
+    defaults:
+      run:
+        working-directory: ${{ inputs.workspace }}
+    steps:
+      - name: Checkout source code
+        uses: actions/checkout@v4
+
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ inputs.region }}
+
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v2
+
+      - name: Set ECR repository name and URI
+        id: ecr
+        run: |
+          REPO_NAME="my-service-${{ inputs.environment }}"
+          echo "ECR_REPO=$REPO_NAME" >> $GITHUB_ENV
+          echo "ECR_URI=${{ steps.login-ecr.outputs.registry }}/$REPO_NAME" >> $GITHUB_ENV
+
+      - name: Build Docker image
+        run: |
+          docker build -f ${{ inputs.dockerfilePath }} \
+            --build-arg BASE_IMAGE=${{ inputs.dockerBaseImage }} \
+            -t $ECR_URI:${{ github.run_id }} .
+
+      - name: Push Docker image to ECR
+        if: ${{ inputs.isDockerImagePush }}
+        run: |
+          docker push $ECR_URI:${{ github.run_id }}
