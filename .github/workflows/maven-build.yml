@@ -46,7 +46,7 @@ on:
 jobs:
   build:
     name: Build and Push Docker Image
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, Linux, X64,tar-runner]
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
