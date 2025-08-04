@@ -47,15 +47,20 @@ jobs:
   build:
     name: Build and Push Docker Image
     runs-on: [self-hosted, Linux, X64,tar-runner]
+    permissions:
+        id-token: write
+        contents: read
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
           aws-region: ${{ inputs.region }}
+          role-skip-session-tagging: true
+          role-duration-seconds: 1200
 
       - name: Login to Amazon ECR
         id: login-ecr
