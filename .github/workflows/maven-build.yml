@@ -1,18 +1,32 @@
-name: Docker Build and Push to ECR
+name: Docker Build
 run-name: Docker_${{ inputs.environment }}_${{ inputs.region }}
 
 on:
   workflow_dispatch:
     inputs:
       environment:
-        description: 'Environment (dev, qa, stage, prod)'
+        type: choice
+        description: 'Environment'
         required: true
-        type: string
+        default: dev
+        options:
+          - dev
+          - qa
+          - stg
+          - prd
 
       region:
+        type: choice
         description: 'AWS Region'
-        default: 'us-east-1'
-        type: string
+        required: true
+        default: us-east-1
+        options:
+          - us-east-1
+          - eu-central-1
+          - eu-west-1
+          - us-west-2
+          - ap-southeast-2
+          - ap-south-1
 
       dockerfilePath:
         description: 'Path to the Dockerfile'
@@ -28,12 +42,6 @@ on:
         description: 'Whether to push the Docker image to ECR'
         default: true
         type: boolean
-
-      workspace:
-        description: 'Working directory'
-        type: string
-        default: '${{ github.workspace }}'
-        required: true
 
 jobs:
   build:
@@ -66,7 +74,6 @@ jobs:
       - name: Build Docker image
         run: |
           docker build -f ${{ inputs.dockerfilePath }} \
-            --build-arg BASE_IMAGE=${{ inputs.dockerBaseImage }} \
             -t $ECR_URI:${{ github.run_id }} .
 
       - name: Push Docker image to ECR
