@@ -42,20 +42,11 @@ on:
         description: 'Whether to push the Docker image to ECR'
         default: true
         type: boolean
-        
-      workspace:
-        description: 'Publish workspace'
-        required: true
-        type: string
-        default: '${{ github.workspace }}'
 
 jobs:
   build:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: ${{ inputs.workspace }}
     steps:
       - name: Checkout source code
         uses: actions/checkout@v4
